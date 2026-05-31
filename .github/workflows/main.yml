@@ -1,0 +1,51 @@
+name: بناء EXE لويندوز
+
+# يشتغل تلقائياً عند رفع الكود، أو يدوياً من تبويب Actions
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: تحميل الكود
+        uses: actions/checkout@v4
+
+      - name: تثبيت Python 3.8 (آخر نسخة تدعم ويندوز 7)
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.8"
+
+      - name: تثبيت المتطلبات (نسخ متوافقة مع ويندوز 7)
+        run: |
+          python -m pip install --upgrade "pip<24"
+          pip install -r markaz2/requirements-win7.txt
+          pip install "pyinstaller==5.13.2"
+
+      - name: بناء ملف EXE
+        run: |
+          pyinstaller --noconfirm --clean `
+            --name "المركز_الثاني" `
+            --windowed `
+            --onefile `
+            --paths . `
+            --add-data "markaz2/assets;markaz2/assets" `
+            --collect-submodules markaz2 `
+            --collect-all openpyxl `
+            --collect-all reportlab `
+            --collect-all xlrd `
+            --collect-all arabic_reshaper `
+            --collect-all bidi `
+            --collect-all et_xmlfile `
+            --hidden-import tkinter `
+            markaz2/app_entry.py
+
+      - name: رفع ملف EXE الجاهز
+        uses: actions/upload-artifact@v4
+        with:
+          name: المركز-الثاني-EXE-ويندوز
+          path: dist/*.exe
+          if-no-files-found: error
