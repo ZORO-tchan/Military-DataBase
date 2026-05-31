@@ -1,0 +1,9 @@
+# متطلبات نظام إدارة المركز الثاني للمستجدين — V3
+# Python 3.8+ (متوافق مع Windows 7 / Core 2 Duo / 3GB RAM)
+openpyxl>=3.0
+reportlab>=3.6
+arabic-reshaper>=3.0
+python-bidi>=0.4
+xlrd>=2.0          # لقراءة ملفات .xls القديمة (Excel 97-2003 / WPS)
+# للبناء كملف EXE (اختياري):
+# pyinstaller>=5.0
